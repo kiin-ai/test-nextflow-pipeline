@@ -3,16 +3,20 @@
 nextflow.enable.dsl=2
 
 process sayHello {
+  publishDir params.outdir, mode: 'copy'
+  
   input: 
     val x
   output:
-    stdout
+    path "greeting.txt"
   script:
     """
-    echo '$x world!'
+    echo '$x world!' > greeting.txt
     """
 }
 
 workflow {
-  Channel.of('Bonjour', 'Ciao', 'Hello', 'Hola') | sayHello | view
+  params.outdir = "results"
+  
+  Channel.of('Bonjour', 'Ciao', 'Hello', 'Hola') | sayHello
 }
